@@ -35,6 +35,11 @@ function transformTypedChar(origChars, key) {
 function accentSyllable(evt) {
     var val = this.value;
     evt = evt || window.event;
+    /*
+    if (typeof evt.srcElement != "undefined" && (evt.srcElement.type == "input" || evt.srcElement.type == "text" || evt.srcElement.type == "textarea")) {
+    	return true;
+	}
+	*/
 
     var charCode = typeof(evt.which) == "number" ? evt.which : evt.keyCode;
     //console.log(charCode);
