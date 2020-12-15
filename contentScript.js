@@ -7,25 +7,26 @@ function transliterate(char)
 {
 	var theChar = (forceLowercase) ? char.toLowerCase() : char;
 	var idx = la.indexOf(theChar);
-	if (idx > -1)
-	{
+	if (idx > -1) {
 		return gr[idx];
-	}
-	else
-	{
+	} else {
 		return char;
 	}
 }
 
 function transformTypedChar(origChars, key) {
-
 	var charsToReplace = 0;
 	var mappedChar = "";
-    if (origChars.length > 0 && origChars == "α" && key == "1") {
+	if (origChars.length < 1)
+	{
+		return [charsToReplace, mappedChar];
+	}
+
+    if ( origChars == "α" && key == "1") {
     	mappedChar = "ά"
     	charsToReplace = 1;
     }
-    else if (origChars.length > 0 && origChars == "ά" && key == "1") {
+    else if ( origChars == "ά" && key == "1") {
     	mappedChar = "α"
     	charsToReplace = 1;
     }
@@ -112,10 +113,5 @@ function accentSyllable(evt) {
     }
     return true;
 }
-$("input").keypress(accentSyllable);
-/*
-document.onkeypress = function() {
-  alert('test');
-};
-*/
 
+$("input").keypress(accentSyllable);
