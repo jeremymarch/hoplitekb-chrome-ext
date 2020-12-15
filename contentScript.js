@@ -115,3 +115,5 @@ function accentSyllable(evt) {
 }
 
 $("input").keypress(accentSyllable);
+$("textarea").keypress(accentSyllable);
+
