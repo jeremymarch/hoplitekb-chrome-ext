@@ -1,0 +1,8 @@
+@font-face {
+ font-family: 'newath';
+ font-style: normal;
+ font-weight: 700;
+ src: url('chrome-extension://__MSG_@@extension_id__/fonts/newathu5.ttf'); 
+}
+
+INPUT { font-family:newath; }

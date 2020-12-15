@@ -5,8 +5,13 @@
   "manifest_version": 2,
   "content_scripts": [
    {
-    "matches": ["http://*/*","https://*/*"],
-     "js": ["jquery.min.js","contentScript.js"]
+    "matches": ["http://*/*","https://*/*","file:///*/*"],
+     "js": ["jquery.min.js","contentScript.js"],
+     "css": ["contentScript.css"]
    }
+ ],
+"web_accessible_resources": [
+ "contentScript.css",
+ "fonts/newathu5.ttf"
  ]
 }
