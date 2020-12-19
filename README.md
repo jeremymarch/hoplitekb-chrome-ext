@@ -1,6 +1,6 @@
-Hoplite Polytonic Greek Keyboard -- Web Extension
+Hoplite Polytonic Greek Keyboard -- WebExtension
 
-Very much beta.  It will let you type polytonic Greek and also automatically changes the font of all INPUT and TEXTAREA elements to New Athena Unicode.
+Very much beta.  It will let you type polytonic Greek and also automatically changes the font of all INPUT and TEXTAREA elements to New Athena Unicode.  Tested so far in Firefox and Chrome, but should also work in other browsers which accept WebExtensions.
 
 Installation:
 1. Download this repo
