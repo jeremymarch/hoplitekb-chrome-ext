@@ -1,6 +1,6 @@
 Hoplite Polytonic Greek Keyboard -- Chrome Browser Extension
 
-Very much beta.  It will let you type polytonic Greek and also automatically changes the font of all <&lt;NPUT> and <TEXTAREA> elements to New Athena Unicode.
+Very much beta.  It will let you type polytonic Greek and also automatically changes the font of all INPUT and TEXTAREA elements to New Athena Unicode.
 
 Installation:
 1. Download this repo
