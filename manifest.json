@@ -3,6 +3,11 @@
   "name": "Hoplite Polytonic Greek Keyboard - Chrome Extension",
   "description": "Type polytonic Greek in web inputs and textareas.",
   "version": "1.1",
+      "icons": {
+        "16": "assets/icon.png",
+        "48": "assets/icon.png",
+        "128": "assets/icon.png"
+    },
   "manifest_version": 2,
   "content_scripts": [
    {
@@ -15,5 +20,9 @@
  "contentScript.css",
  "fonts/newathu5.ttf",
  "hoplitekb.wasm"
- ]
+ ],
+  "browser_action": {
+      "default_icon": "assets/icon.png",
+      "default_popup": "browser_action.html"
+  }
 }

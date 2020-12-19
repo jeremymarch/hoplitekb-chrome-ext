@@ -23,7 +23,7 @@ loadWebAssembly(chrome.runtime.getURL("hoplitekb.wasm"))
 
 var la = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 var gr = ["α","β","ψ","δ","ε","φ","γ","η","ι","ξ","κ","λ","μ","ν","ο","π","","ρ","σ","τ","θ","ω","ς","χ","υ","ζ","Α","Β","Ψ","Δ","Ε","Φ","Γ","Η","Ι","Ξ","Κ","Λ","Μ","Ν","Ο","Π","","Ρ","Σ","Τ","Θ","Ω","Σ","Χ","Υ","Ζ"];
-var forceLowercase = true;
+var forceLowercase = false;
 function transliterate(char)
 {
 	var theChar = (forceLowercase) ? char.toLowerCase() : char;
@@ -54,6 +54,10 @@ function accentSyllable(origChars, key) {
 }
 
 function handleKey(evt) {
+	if (!enabled)
+	{
+		return true;
+	}
     var val = this.value;
     evt = evt || window.event;
 
@@ -144,4 +148,20 @@ function handleKey(evt) {
 
 $("input").keypress(handleKey);
 $("textarea").keypress(handleKey);
+
+var enabled = false;
+chrome.runtime.onMessage.addListener(
+    function(message, sender, sendResponse) {
+        switch(message.type) {
+            case "getEnabled":
+                sendResponse(enabled);
+            	break;
+            case "toggleEnabled":
+            	enabled = !enabled;
+                sendResponse(enabled);
+            	break;
+        }
+    }
+);
+
 
