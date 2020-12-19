@@ -1,8 +1,8 @@
 //https://github.com/GoogleChrome/chrome-extensions-samples/blob/master/api/preferences/enableReferrer/popup.js
 {
   "name": "Hoplite Polytonic Greek Keyboard - Chrome Extension",
-  "description": "Type polytonic Greek in web inputs and textareas.",
-  "version": "1.1",
+  "description": "Type polytonic Greek in HTML input and textarea elements.",
+  "version": "0.1",
       "icons": {
         "16": "assets/icon.png",
         "48": "assets/icon.png",
