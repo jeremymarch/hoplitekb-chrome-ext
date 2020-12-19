@@ -159,6 +159,16 @@ chrome.runtime.onMessage.addListener(
             case "toggleEnabled":
             	enabled = !enabled;
                 sendResponse(enabled);
+                if (enabled) {
+                	$("input").css("font-family","newathFF,newathChrome");
+					$("textarea").css("font-family","newathFF,newathChrome");
+                }
+                //leave the fonts on, or we lose the diacritics
+                /*else
+                {
+                	$("input").css("font-family","");
+					$("textarea").css("font-family","");
+                }*/
             	break;
         }
     }

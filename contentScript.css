@@ -1,9 +1,17 @@
 @font-face {
- font-family: 'newath';
+ font-family: 'newathFF';
+ font-style: normal;
+ font-weight: 700;
+ src: url('moz-extension://__MSG_@@extension_id__/fonts/newathu5.ttf');
+}
+
+@font-face {
+ font-family: 'newathChrome';
  font-style: normal;
  font-weight: 700;
  src: url('chrome-extension://__MSG_@@extension_id__/fonts/newathu5.ttf'); 
 }
-
-INPUT { font-family:newath !important; }
-TEXTAREA { font-family:newath !important; }
+/*
+INPUT { font-family:newathFF,newathChrome !important; }
+TEXTAREA { font-family:newathFF,newathChrome !important; }
+*/
