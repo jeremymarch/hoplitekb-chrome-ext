@@ -10,7 +10,6 @@ Still very beta. It will let you type polytonic Greek and also automatically cha
 The extension is disabled by default. Enable it from the browser button to the right of the search bar.
 Roman keys are automatically transliterated to Greek. Diacritics are toggled on/off by pressing the 0-9 keys after the vowel.
 
-0. Underdot
 1. Rough breathing
 2. Smooth breathing
 3. Acute
@@ -20,3 +19,4 @@ Roman keys are automatically transliterated to Greek. Diacritics are toggled on/
 7. Breve
 8. Iota subscript
 9. Diaeresis
+0. Underdot
