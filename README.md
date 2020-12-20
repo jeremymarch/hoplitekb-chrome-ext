@@ -19,5 +19,5 @@ Diacritics are toggled on/off by pressing the 0-9 keys after the vowel.
 5. Circumflex
 6. Macron
 7. Breve
-8. Iota Subscript
+8. Iota subscript
 9. Diaeresis
