@@ -1,153 +1,138 @@
-// Loads a WebAssembly dynamic library, returns a promise.
-// imports is an optional imports object
-function loadWebAssembly(filename, imports) {
-  return fetch(filename)
-    .then(response => response.arrayBuffer())
-    .then(buffer => WebAssembly.compile(buffer))
-    .then(module => { 
-      return WebAssembly.instantiate(module, imports);
-    });
-}
 
-var wasmBuffer;
-var accentSyllableWASM;
-loadWebAssembly(chrome.runtime.getURL("hoplitekb.wasm"))
-  .then(instance => {
-    var exports = instance.exports;
-    accentSyllableWASM = exports.accentSyllable2;
-    var memory = exports.memory;
 
-    wasmBuffer = new Uint16Array(memory.buffer, 0, 1024);
-  }
-);
+// fetch('hoplitekb_wasm_rs_bg.wasm').then(response =>
+//     response.arrayBuffer()
+//   ).then(bytes =>
+//     WebAssembly.instantiate(bytes)
+//   ).then(results => {
+//     var toggle = results.instance.exports.toggle;
+//     var translit = results.instance.exports.translit;
+//   });
 
-var la = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
-var gr = ["α","β","ψ","δ","ε","φ","γ","η","ι","ξ","κ","λ","μ","ν","ο","π","","ρ","σ","τ","θ","ω","ς","χ","υ","ζ","Α","Β","Ψ","Δ","Ε","Φ","Γ","Η","Ι","Ξ","Κ","Λ","Μ","Ν","Ο","Π","","Ρ","Σ","Τ","Θ","Ω","Σ","Χ","Υ","Ζ"];
-var forceLowercase = false;
-function transliterate(char)
-{
-	var theChar = (forceLowercase) ? char.toLowerCase() : char;
-	var idx = la.indexOf(theChar);
-	if (idx > -1) {
-		return gr[idx];
-	}
-	else {
-		return char;
-	}
-}
+//https://stackoverflow.com/questions/49611290/using-webassembly-in-chrome-extension
+//https://stackoverflow.com/questions/48104433/how-to-import-es6-modules-in-content-script-for-chrome-extension
+//https://stackoverflow.com/questions/51114093/vanilla-javascript-intercept-key-on-input-and-change-key-value
+//https://levelup.gitconnected.com/creating-a-psychedelic-webassembly-chrome-extension-9c3a5d806e4a
 
-function accentSyllable(origChars, key) {
-	var len = origChars.length;
-	//add letter and any combining diacritics to the buffer as code points
-	for (var i = 0; i < len; i++) {
-		wasmBuffer[i] = origChars.codePointAt(i);
-	}
+// (async () => {
+//     const src = chrome.runtime.getURL("hoplitekb_wasm_rs.js");
+//     var contentMain = await import(src);
+//     //contentMain.main();
+//   })();
 
-    len = accentSyllableWASM(wasmBuffer.byteOffset, len, key, 1, 1);
+//   var importObject = {
+//     imports: { }
+//   };
+//  var response = null;
+//  var bytes = null;
+//  var results = null;
+//  var toggle;
+//  var translit;
+//  var wasmPath = chrome.runtime.getURL("hoplitekb_wasm_rs_bg.wasm");
+//  fetch(wasmPath).then(response =>
+//      response.arrayBuffer()
+//      ).then(bytes =>
+//         WebAssembly.instantiate(bytes, importObject)
+//          ).then(results => {
+//             toggle = results.instance.exports.toggle;
+//             translit = results.instance.exports.translit;
+//    });
 
-    //transform the returned code points back to a string
-	var newLetter = "";
-	for (var i = 0; i < len; i++) {
-		newLetter += String.fromCodePoint(wasmBuffer[i]);
-	}
-    return [len, newLetter];
-}
+   import { toggle, translit, default as init } from 'hoplitekb_wasm_rs.js';
 
-function handleKey(evt) {
-	if (!enabled)
-	{
-		return true;
-	}
-    var val = this.value;
-    evt = evt || window.event;
-
-    var charCode = typeof(evt.which) == "number" ? evt.which : evt.keyCode;
-
-    if (charCode && charCode > 64 && charCode < 123) //letter
-    {
-	    var start = this.selectionStart;
-        var end = this.selectionEnd;
-    	var key = String.fromCharCode(charCode);
-
-    	var mappedChar = transliterate(key);
-    	var charsToReplace = 0;
-	    this.value = val.slice(0, start - charsToReplace) + mappedChar + val.slice(end);
-        // Move the caret
-        this.selectionStart = this.selectionEnd = start + 1 - charsToReplace;
-        return false;
-    }
-    else if (charCode && charCode > 47 && charCode < 58) { //number: 0-9 are 48-57
-        var key = String.fromCharCode(charCode);
-        var hckey = 0;
-        switch( parseInt(key) ) {
-            case 1:
-                hckey = 5; //rough
-                break;
-            case 2:
-                hckey = 6; //smooth
-                break;
-            case 3:
-                hckey = 1; //acute
-                break;
-            case 4:
-                hckey = 3; //grave
-                break;
-            case 5:
-                hckey = 2; //circumflex
-                break;
-            case 6:
-                hckey = 4; //macron
-                break;
-            case 7:
-                hckey = 10; //breve
-                break;
-            case 8:
-                hckey = 7; //iota subscript
-                break;
-            case 9:
-                hckey = 9; //diaeresis
-                break;
-            case 0:
-                hckey = 11; //underdot
-                break;
+        async function run() {
+            await init('hoplitekb_wasm_rs_bg.wasm');
+            // make the function available to the browser
+            window.toggle = toggle;
+            window.translit = translit;
         }
-        var start, end;
-        if (typeof(this.selectionStart) == "number" && typeof(this.selectionEnd) == "number") {
-            // Non-IE browsers and IE 9+
-            start = this.selectionStart;
-            end = this.selectionEnd;
+        run(); 
 
-            var combining = [0x0300, 0x0301, 0x0304, 0x0306, 0x0308, 0x0313, 0x0314, 0x0323, 0x0342, 0x0345];
-            var off = 1;
-            for (var i = start; i > -1; i--)
-            {
-            	if (combining.indexOf(val.codePointAt(i - 1)) > -1) {
-            		off++;
-            	}
-            	else {
-            		break;
-            	}
-            }
-	        var ret = accentSyllable(val.slice(start - off, start), hckey.toString());
-	        var newLetter = ret[1];
-	        var charsToReplace = start - (start - off);
- 
-            if (ret[0] > 0 && newLetter != "")
-            {
-            	//update the input/textarea
-	            this.value = val.slice(0, start - charsToReplace) + newLetter + val.slice(end);
-	            // Move the caret
-	            this.selectionStart = this.selectionEnd = (start - charsToReplace) + ret[0];
-        	}
 
-        } 
-        return false;
+const _MACRON     = 1;
+const _SMOOTH     = 2;
+const _ROUGH      = 4;
+const _ACUTE      = 8;
+const _GRAVE      = 16;
+const _CIRCUMFLEX = 32;
+const _IOTA_SUB   = 64;
+const _DIAERESIS  = 128;
+const _BREVE      = 256;
+const _UNDERDOT   = 512;
+const _CASE_SENSITIVE = 1024; //, not used yet
+const _HK_IGNORE_UNKNOWN_CHARS = 2048;
+    function toggle_diacritic(str, pos, diacritic, unicodeMode) {
+        if (pos < 0 || pos > str.length) {
+            return { str: str, pos: str.length };
+        }
+        const max_combining_chars = 10;
+        let replace_len = Math.min(max_combining_chars + 1, pos);
+        let s = str.slice(pos - replace_len, pos);
+        let res = toggle(s, parseInt(diacritic), false, parseInt(unicodeMode));
+    
+        let new_pos = (pos - replace_len) + res.length;
+    
+        return { str: str.slice(0, pos - replace_len) + res + str.slice(pos), pos: new_pos };
     }
-    return true;
-}
+    
+    //let forceLowercase = true;
+    let unicodeMode = 0;
+    function handleKey(e) {
+        console.log("key: " + e.key);
 
-$("input").keypress(handleKey);
-$("textarea").keypress(handleKey);
+        if (!enabled) {
+		    return true;
+	    }
+
+        // var events = document.createEvent('Event');
+        // events.initEvent('keydown',true,true);
+        // elem.dispatchEvent(events);
+
+        //if (typeof(this.selectionStart) == "number" && typeof(this.selectionEnd) == "number") {
+            console.log("blah1");
+            let text = this.value;
+            let start = this.selectionStart;
+            let key = e.key;//.toLowerCase(); //force lower case
+    
+            if ( !isNaN( parseInt(key) ) ) {
+                console.log("blah2");
+                unicodeMode = document.querySelector("input[name=unicodeMode]:checked").value;
+                let res = toggle_diacritic(text, start, key, unicodeMode);
+                this.value = res.str;
+                this.selectionStart = this.selectionEnd = res.pos;
+                e.preventDefault();
+                console.log(res.str);
+                return false;
+            }
+            else if (key.length == 1) { //len == 1 to exclude keys like "ENTER", etc.
+                let greek_letter = translit(key); //returns \0 if the character cannot be transliterated
+                if (greek_letter !== "\0") {
+                    console.log(greek_letter);
+                    let end = this.selectionEnd;            
+                    this.value = text.slice(0, start) + greek_letter + text.slice(end);
+                    this.selectionStart = this.selectionEnd = start + 1;
+                    e.preventDefault();
+                    
+                    return false;     
+                }
+            }
+        //}
+        return true; // true allows most punctuation, etc. pass through
+    }
+
+// $("input").keypress(handleKey);
+// $("textarea").keypress(handleKey);
+
+
+var elem = document.querySelector(".docs-texteventtarget-iframe").contentDocument.activeElement;
+elem.addEventListener('keyup', handleKey, false);
+// elem.addEventListener('keyup',function(e){
+//     console.log('check check2: ' + enabled + ", " + e.key);
+// }, false);
+
+// var events = document.createEvent('Event');
+// events.initEvent('keyup',true,true);
+// elem.dispatchEvent(events);
 
 var enabled = false;
 chrome.runtime.onMessage.addListener(
@@ -160,8 +145,8 @@ chrome.runtime.onMessage.addListener(
             	enabled = !enabled;
                 sendResponse(enabled);
                 if (enabled) {
-                	$("input").css("font-family","newathFF,newathChrome");
-					$("textarea").css("font-family","newathFF,newathChrome");
+                	//$("input").css("font-family","newathFF,newathChrome");
+					//$("textarea").css("font-family","newathFF,newathChrome");
                 }
                 //leave the fonts on, or we lose the diacritics
                 /*else

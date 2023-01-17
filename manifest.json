@@ -8,7 +8,7 @@
         "48": "assets/icon.png",
         "128": "assets/icon.png"
     },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "content_scripts": [
    {
     "matches": ["http://*/*","https://*/*","file:///*/*"],
@@ -16,13 +16,18 @@
      "css": ["contentScript.css"]
    }
  ],
-"web_accessible_resources": [
+"web_accessible_resources": [{
+  "resources": [
  "contentScript.css",
  "fonts/newathu5.ttf",
- "hoplitekb.wasm"
- ],
-  "browser_action": {
+ "hoplitekb_wasm_rs_bg.wasm"
+],"matches": ["http://*/*", "https://*/*"]}],
+  "action": {
       "default_icon": "assets/icon.png",
       "default_popup": "browser_action.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
   }
+  
 }

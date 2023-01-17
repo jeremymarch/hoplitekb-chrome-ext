@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<script type="module">
+
 let wasm;
 
 let WASM_VECTOR_LEN = 0;
@@ -264,14 +261,3 @@ async function init(input) {
 
 export { initSync }
 export default init;
-
-</script>
-</head>
-<body style="font-family:helvetica,arial,sans-serif;margin:20px;background-color:#BBB;width:220px;font-size:12pt;">
-	<center>
-	Hoplite Keyboard is: <span id="isEnabled" style="text-decoration:underline;"></span><br/><br/>
-	<button id="toggleEnabled"></button>
-	</center>
-	<script src="popup.js"></script>
-</body>
-</html>
